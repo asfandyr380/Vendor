@@ -1,0 +1,11 @@
+const String Dashboard = "Dashboard";
+const String AddProducts = "AddProducts";
+const String Manage = "ManageProducts";
+const String Orders = "OrdersView";
+const String AddStores = "AddStore";
+const String ManageStores = "ManageStore";
+const String Invoice = "Invoice";
+const String Login = "Login";
+const String Messages = "Messages";
+const String Categories = "Categories";
+const String PrintPage = "Print";
