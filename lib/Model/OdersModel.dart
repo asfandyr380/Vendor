@@ -22,7 +22,7 @@ class OrderModel {
         grandTotal = map['GrandTotal'],
         address = map['Address'],
         date = map['Date'],
-        orderStatus = map['orderStatus'].toString(),
+        orderStatus = map['OrderStatus'].toString(),
         products = products.map((e) => InvoiceModel.fromMap(e)).toList();
 }
 

@@ -648,7 +648,9 @@ class OrderInvoice extends StatelessWidget {
                                                             .styleFrom(
                                                           primary: accentColor,
                                                         ),
-                                                        onPressed: () {},
+                                                        onPressed: () => model
+                                                            .navigateToPrint(
+                                                                m!, model),
                                                         child: Text(
                                                             'Print Invoice'),
                                                       ),

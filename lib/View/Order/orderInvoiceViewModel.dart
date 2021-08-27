@@ -28,6 +28,7 @@ class InvoiceViewModel extends ChangeNotifier {
       subTotal += double.parse(m.total);
     }
     minusDiscount(me.discount!);
+    print(me.orderStatus);
     getStatus(me.orderStatus);
   }
 
