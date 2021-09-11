@@ -20,9 +20,8 @@ class OrderViewModel extends ChangeNotifier {
 
   orders() async {
     isBusy(true);
-    var storeId = await _storageServices.getUserId();
-    // TODO: Change to storeId Before Release
-    var result = await _orderServices.getOrders(27);
+    int userId = await _storageServices.getUserId();
+    var result = await _orderServices.getOrders(userId);
     if (result is List<OrderModel>) {
       orderlist = result;
       notifyListeners();

@@ -68,13 +68,23 @@ class _AddProductState extends State<AddProduct> {
               FloatingActionButton.extended(
                 onPressed: () => widget.productModel == null
                     ? model.submitProduct().then((value) {
-                        showTopSnackBar(
-                          context,
-                          CustomSnackBar.success(
-                            message: 'Product Added Successfully',
-                          ),
-                          displayDuration: Duration(milliseconds: 150),
-                        );
+                        if (value) {
+                          showTopSnackBar(
+                            context,
+                            CustomSnackBar.success(
+                              message: 'Product Added Successfully',
+                            ),
+                            displayDuration: Duration(milliseconds: 150),
+                          );
+                        } else {
+                          showTopSnackBar(
+                            context,
+                            CustomSnackBar.error(
+                              message: 'Something Went Wrong try again',
+                            ),
+                            displayDuration: Duration(milliseconds: 150),
+                          );
+                        }
                       })
                     : model.updateProduct().then((value) {
                         showTopSnackBar(
@@ -667,15 +677,27 @@ class _AddProductState extends State<AddProduct> {
                                       ElevatedButton(
                                         onPressed: () =>
                                             model.submitProduct().then((_) {
-                                          showTopSnackBar(
-                                            context,
-                                            CustomSnackBar.success(
-                                              message:
-                                                  'Product Added Successfully',
-                                            ),
-                                            displayDuration:
-                                                Duration(milliseconds: 150),
-                                          );
+                                          if (_) {
+                                            showTopSnackBar(
+                                              context,
+                                              CustomSnackBar.success(
+                                                message:
+                                                    'Product Added Successfully',
+                                              ),
+                                              displayDuration:
+                                                  Duration(milliseconds: 150),
+                                            );
+                                          } else {
+                                            showTopSnackBar(
+                                              context,
+                                              CustomSnackBar.error(
+                                                message:
+                                                    'Something Went Wrong try again',
+                                              ),
+                                              displayDuration:
+                                                  Duration(milliseconds: 150),
+                                            );
+                                          }
                                         }),
                                         child: model.isLoading
                                             ? Container(

@@ -1,9 +1,13 @@
 import 'dart:convert';
 import 'package:admin_panal/Config/Const.dart';
+import 'package:admin_panal/Config/locator.dart';
 import 'package:admin_panal/Config/passwordGenerator.dart';
 import 'package:admin_panal/Model/attributeModel.dart';
 import 'package:admin_panal/Model/productModel.dart';
+import 'package:admin_panal/Services/Api/SharedPreference/Storage_Services.dart';
 import 'package:http/http.dart' as http;
+
+StorageServices _storageServices = locator<StorageServices>();
 
 class ProductServices {
   Future addProduct(Map body) async {
@@ -85,8 +89,9 @@ class ProductServices {
   }
 
   Future removeProduct(int id, String pass) async {
-    Map map = {'email': 'asfandyr380@gmail.com', 'password': pass};
-    Uri _url = Uri.parse('$baseUrl/products/$id');
+    String userEmail = await _storageServices.getUserEmail();
+    Map map = {'email': userEmail, 'password': pass};
+    Uri _url = Uri.parse('$baseUrl/products/store/$id');
     http.Response res = await http.delete(_url, body: map);
     var decodedBody = jsonDecode(res.body);
     if (res.statusCode == 200 && decodedBody['success'] == 1) {
@@ -107,12 +112,12 @@ class ProductServices {
     }
   }
 
-  filterProductsByName(String key) async {
+  filterProductsByName(String key, int id) async {
     List<String> images = [];
     List<String> rawPath = [];
 
     List<ProductModel1> products = [];
-    Uri _url = Uri.parse('$baseUrl/products/searchAll/$key');
+    Uri _url = Uri.parse('$baseUrl/products/store/searchAll/$key/$id');
     http.Response res = await http.get(_url);
     var decodedBody = jsonDecode(res.body);
     if (res.statusCode == 200 && decodedBody['success'] == 1) {
@@ -174,11 +179,11 @@ class ProductServices {
     }
   }
 
-  filterByCate(String key) async {
+  filterByCate(String key, int id) async {
     List<String> images = [];
     List<String> rawPath = [];
     List<ProductModel1> products = [];
-    Uri _url = Uri.parse('$baseUrl/products/searchAllByCate/$key');
+    Uri _url = Uri.parse('$baseUrl/products/store/searchAllByCate/$key/$id');
     http.Response res = await http.get(_url);
     var decodedBody = jsonDecode(res.body);
     if (res.statusCode == 200 && decodedBody['success'] == 1) {

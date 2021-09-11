@@ -22,6 +22,11 @@ class StorageServices {
     return _preferences.getString('user') != null;
   }
 
+  Future<String> getUserEmail() async {
+    SharedPreferences _preferences = await SharedPreferences.getInstance();
+    return _preferences.getString('user')!;
+  }
+
   Future getUserId() async {
     SharedPreferences _preferences = await SharedPreferences.getInstance();
     return _preferences.get('id');

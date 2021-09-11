@@ -7,10 +7,13 @@ class OrderServices {
   Future getOrderCount(int id) async {
     Uri _url = Uri.parse('$baseUrl/orders/storeCount/$id');
     http.Response res = await http.get(_url);
-    var decodedBody = jsonDecode(res.body);
-    if (res.statusCode == 200) {
-      return decodedBody['totalOrders'];
-    }
+    if (res.body.isNotEmpty) {
+      var decodedBody = jsonDecode(res.body);
+      if (res.statusCode == 200) {
+        return decodedBody['totalOrders'];
+      }
+    } else
+      return 0;
   }
 
   Future getOrders(int id) async {

@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'dart:typed_data';
 import 'package:admin_panal/Config/locator.dart';
-import 'package:admin_panal/Config/routes.dart';
 import 'package:admin_panal/Model/attributeModel.dart';
 import 'package:admin_panal/Model/categoryModel.dart';
 import 'package:admin_panal/Model/productModel.dart';
@@ -157,6 +155,7 @@ class AddProductsViewModel extends ChangeNotifier {
 
   Future updateProduct() async {
     isBusy(true);
+    int userId = await _storageServices.getUserId();
     ProductModel _model;
     await updateCate(cateId);
     if (imagelist.isNotEmpty) {
@@ -170,7 +169,7 @@ class AddProductsViewModel extends ChangeNotifier {
         altTag: altDescController.text,
         metaDesc: metaDescController.text,
         metakeywords: metaKeywordConrtoller.text,
-        storeId: "27",
+        storeId: userId.toString(),
         searchKey: nameController.text.toLowerCase(),
         attributeStatus: attributeStatus.toString(),
         status: '0',
@@ -198,7 +197,7 @@ class AddProductsViewModel extends ChangeNotifier {
         altTag: altDescController.text,
         metaDesc: metaDescController.text,
         metakeywords: metaKeywordConrtoller.text,
-        storeId: "27",
+        storeId: userId.toString(),
         searchKey: nameController.text.toLowerCase(),
         attributeStatus: attributeStatus.toString(),
         status: '0',
@@ -241,66 +240,76 @@ class AddProductsViewModel extends ChangeNotifier {
   }
 
   Future submitProduct() async {
-    isBusy(true);
-    int cateId = await addCatefirst();
-    var storeId = await _storageServices.getUserId();
-    List imageresult = await _productServices.uploadImages(imagelist);
-    ProductModel _model = ProductModel(
-      name: name,
-      price: storeprice,
-      salePrice: '0',
-      description: longDesc,
-      cateId: cateId.toString(),
-      altTag: altDesc,
-      metaDesc: metaDesc,
-      metakeywords: metakeyword,
-      storeId: "27",
-      searchKey: name.toLowerCase(),
-      attributeStatus: '0',
-      status: '0',
-      image2:
-          imageresult.asMap().containsKey(1) ? imageresult[1]['filename'] : '',
-      image3:
-          imageresult.asMap().containsKey(2) ? imageresult[2]['filename'] : '',
-      image4:
-          imageresult.asMap().containsKey(3) ? imageresult[3]['filename'] : '',
-      image: imageresult[0]['filename'],
-      onSale: salePrice.isNotEmpty ? '1' : '0',
-      shortDesc: shortDesc,
-      vatt: vatt,
-    );
-    Map data = _model.toJson();
-    var result = await _productServices.addProduct(data);
-    if (result != 0) {
-      print('Product Added Successfuly');
-      if (attributeModel.isNotEmpty) {
-        await addAttribute(result);
+    if (imagelist.isNotEmpty) {
+      isBusy(true);
+      int cateId = await addCatefirst();
+      var storeId = await _storageServices.getUserId();
+
+      List imageresult = await _productServices.uploadImages(imagelist);
+      ProductModel _model = ProductModel(
+        name: name,
+        price: storeprice,
+        salePrice: '0',
+        description: longDesc,
+        cateId: cateId.toString(),
+        altTag: altDesc,
+        metaDesc: metaDesc,
+        metakeywords: metakeyword,
+        storeId: storeId.toString(),
+        searchKey: name.toLowerCase(),
+        attributeStatus: '0',
+        status: '0',
+        image2: imageresult.asMap().containsKey(1)
+            ? imageresult[1]['filename']
+            : '',
+        image3: imageresult.asMap().containsKey(2)
+            ? imageresult[2]['filename']
+            : '',
+        image4: imageresult.asMap().containsKey(3)
+            ? imageresult[3]['filename']
+            : '',
+        image: imageresult[0]['filename'],
+        onSale: salePrice.isNotEmpty ? '1' : '0',
+        shortDesc: shortDesc,
+        vatt: vatt,
+      );
+      Map data = _model.toJson();
+      var result = await _productServices.addProduct(data);
+      if (result != 0) {
+        print('Product Added Successfuly');
+        if (attributeModel.isNotEmpty) {
+          await addAttribute(result);
+        }
+        isBusy(false);
+        nameController.clear();
+        storePriceController.clear();
+        salePriceController.clear();
+        shortDescController.clear();
+        longDescController.clear();
+        altDescController.clear();
+        metaDescController.clear();
+        metaKeywordConrtoller.clear();
+        varientController.clear();
+        stockController.clear();
+        priceController.clear();
+        attributeSalePriceController.clear();
+        vattController.clear();
+        attributeModel = [];
+        imagelist = [];
+        imageByte = null;
+        imagelist = [];
+        attributeImglist = [];
+        selectedState = null;
+        clearSelection();
+        return true;
+      } else {
+        print(result);
+        return false;
       }
     } else {
-      print(result);
+      print("No Image Selected");
+      return false;
     }
-    isBusy(false);
-    nameController.clear();
-    storePriceController.clear();
-    salePriceController.clear();
-    shortDescController.clear();
-    longDescController.clear();
-    altDescController.clear();
-    metaDescController.clear();
-    metaKeywordConrtoller.clear();
-    varientController.clear();
-    stockController.clear();
-    priceController.clear();
-    attributeSalePriceController.clear();
-    vattController.clear();
-    attributeModel = [];
-    imagelist = [];
-    imageByte = null;
-    imagelist = [];
-    attributeImglist = [];
-    selectedState = null;
-    // _navigation.navigateTo(AddProducts);
-    clearSelection();
   }
 
   clearSelection() {
