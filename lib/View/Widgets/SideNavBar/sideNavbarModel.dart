@@ -16,7 +16,10 @@ class SideNavBarModel extends ChangeNotifier {
         _navigation.navigateTo(AddProducts);
         break;
       case 'Manage Products':
-        _navigation.navigateTo(Manage);
+        _navigation.navigateTo(Manage, arguments: false);
+        break;
+      case 'All Products':
+        _navigation.navigateTo(Manage, arguments: true);
         break;
       case 'Add Stores':
         _navigation.navigateTo(AddStores);

@@ -7,6 +7,7 @@ import 'package:admin_panal/View/Login/loginView.dart';
 import 'package:admin_panal/View/Order/OrderView.dart';
 import 'package:admin_panal/View/Order/orderInvoice.dart';
 import 'package:admin_panal/View/Products/addproductsView.dart';
+import 'package:admin_panal/View/Products/allProducts.dart';
 import 'package:admin_panal/View/Products/manageProducts.dart';
 import 'package:flutter/material.dart';
 
@@ -21,12 +22,23 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _GeneratePageRoute(
           widget: AddProduct(productModel: m), routeName: settings.name);
     case Manage:
+      bool isAll = arg as bool;
       return _GeneratePageRoute(
-          widget: ManageProducts(), routeName: settings.name);
+          widget: ManageProducts(
+            isAll: isAll,
+          ),
+          routeName: settings.name);
     case Orders:
       return _GeneratePageRoute(widget: OrderView(), routeName: settings.name);
     case Login:
       return _GeneratePageRoute(widget: LoginView(), routeName: settings.name);
+    case AllProducts:
+      ProductModel1? m = arg as ProductModel1?;
+      return _GeneratePageRoute(
+          widget: AllProductView(
+            productModel: m,
+          ),
+          routeName: settings.name);
     case PrintPage:
       Map file = arg as Map;
       return _GeneratePageRoute(

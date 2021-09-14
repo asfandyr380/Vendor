@@ -69,4 +69,14 @@ class AttributeService {
       return 0;
     }
   }
+
+  updateStatus(String id, int state) async {
+    Uri _url = Uri.parse("$baseUrl/products/status/$id/$state");
+    http.Response res = await http.put(_url);
+    var decodedBody = jsonDecode(res.body);
+    if (res.statusCode == 200 && decodedBody['success'] == 1) {
+      return 1;
+    } else
+      return 0;
+  }
 }

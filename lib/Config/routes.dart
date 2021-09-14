@@ -9,3 +9,4 @@ const String Login = "Login";
 const String Messages = "Messages";
 const String Categories = "Categories";
 const String PrintPage = "Print";
+const String AllProducts = "AddAllProducts";

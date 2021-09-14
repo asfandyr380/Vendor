@@ -8,10 +8,11 @@ import 'package:admin_panal/Services/Api/Category/category_services.dart';
 import 'package:admin_panal/Services/Api/Products/Products_Services.dart';
 import 'package:admin_panal/Services/Api/SharedPreference/Storage_Services.dart';
 import 'package:admin_panal/Services/Navigation/navigation_services.dart';
+import 'package:admin_panal/View/Products/allProducts.dart';
 import 'package:admin_panal/View/Products/manageProducts.dart';
 import 'package:flutter/material.dart';
 
-class AddProductsViewModel extends ChangeNotifier {
+class AllProductViewModel extends ChangeNotifier {
   ProductServices _productServices = locator<ProductServices>();
   CategoryServices _categoryService = locator<CategoryServices>();
   AttributeService _attributeService = locator<AttributeService>();
@@ -72,6 +73,7 @@ class AddProductsViewModel extends ChangeNotifier {
       cateId = model.cateId!;
       attributeStatus = model.attributeStatus!;
       editImageList = model.rawImgs;
+      print(model.images.length);
       onSaleStatus = model.onSale!;
       notifyListeners();
       getProductCate();
@@ -92,17 +94,12 @@ class AddProductsViewModel extends ChangeNotifier {
   }
 
   GeneralCate? selectedState;
-  int attributeLength = 0;
-  String attributeimg = '';
+
   getAttributes(int id) async {
     var result = await _attributeService.getAttribute(id);
     if (result != 0) {
-      if (result != []) {
-        attributeModel = result;
-        notifyListeners();
-      }
-      attributeLength = attributeModel.length;
-      attributeimg = attributeModel[0].image ?? '';
+      attributeModel = result;
+      notifyListeners();
     }
   }
 
@@ -188,7 +185,7 @@ class AddProductsViewModel extends ChangeNotifier {
             : '',
         image: imageresult[0]['filename'],
         shortDesc: shortDescController.text,
-        onSale: onSaleStatus.toString(),
+        onSale: '0',
         vatt: vattController.text,
       );
     } else {
@@ -210,29 +207,17 @@ class AddProductsViewModel extends ChangeNotifier {
         image4: editImageList.asMap().containsKey(3) ? editImageList[3] : '',
         image: editImageList[0],
         shortDesc: shortDescController.text,
-        onSale: onSaleStatus.toString(),
+        onSale: '0',
         vatt: vattController.text,
       );
     }
     Map data = _model.toJson();
-    var result = await _productServices.updateProduct(id, data);
+    var result = await _productServices.addProduct(data);
     isBusy(false);
 
     if (result != 0) {
-      if (attributeModel.isEmpty) {
-        updateStatus(0);
-      } else {
-        updateStatus(1);
-      }
       if (attributeModel.isNotEmpty) {
-        if (attributeModel.length > attributeLength) {
-          attributeModel.removeRange(0, attributeLength);
-          if (attributeStatus == 1) {
-            await addMorettribute(id);
-          } else {
-            await addAttribute(id);
-          }
-        }
+        await addAttribute(result);
       }
       return true;
     } else {
@@ -240,12 +225,10 @@ class AddProductsViewModel extends ChangeNotifier {
     }
   }
 
-  updateStatus(int state) async {
-    await _attributeService.updateStatus(id.toString(), state);
-  }
-
   redirectBack() async {
-    _navigation.pushReplaceRoute(ManageProducts());
+    _navigation.pushReplaceRoute(ManageProducts(
+      isAll: true,
+    ));
   }
 
   Future updateCate(int id) async {
@@ -345,16 +328,6 @@ class AddProductsViewModel extends ChangeNotifier {
   removeAttribute(int currentIdx) {
     attributeModel.removeAt(currentIdx);
     notifyListeners();
-  }
-
-  Future addMorettribute(int id) async {
-    for (var model in attributeModel) {
-      Map data = model.toJson();
-      var result = await _attributeService.addAttribute(data, id, attributeimg);
-      if (result != 0) {
-        print(result);
-      }
-    }
   }
 
   Future addAttribute(int id) async {

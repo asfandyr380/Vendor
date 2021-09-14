@@ -27,6 +27,16 @@ class ManageProductsViewModel extends ChangeNotifier {
     isBusy(false);
   }
 
+  getAllProducts() async {
+    isBusy(true);
+    var result = await _productServices.getAllProducts();
+    if (result is List<ProductModel1>) {
+      productlist = result;
+      notifyListeners();
+    }
+    isBusy(false);
+  }
+
   onSuperChange(val) {
     subCate = val;
     notifyListeners();
@@ -87,6 +97,10 @@ class ManageProductsViewModel extends ChangeNotifier {
 
   navigateToAddProduct(ProductModel1 m) async {
     _navigation.navigateTo(AddProducts, arguments: m);
+  }
+
+  navigateToAllProduct(ProductModel1 m) async {
+    _navigation.navigateTo(AllProducts, arguments: m);
   }
 
   Future deleteProduct(int id, int currentIdx, String pass) async {

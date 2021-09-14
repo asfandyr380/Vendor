@@ -84,6 +84,14 @@ class leftSideNav extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: SizeConfig.blockSizeHorizontal * 1)),
                       ),
+                      ListTile(
+                        onTap: () =>
+                            model.navigateToSelectedPage('All Products'),
+                        mouseCursor: SystemMouseCursors.click,
+                        title: Text('All Product',
+                            style: TextStyle(
+                                fontSize: SizeConfig.blockSizeHorizontal * 1)),
+                      ),
                     ],
                     title: Text(
                       'Product',

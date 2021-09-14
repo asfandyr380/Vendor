@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:admin_panal/Config/Const.dart';
 import 'package:admin_panal/Config/sizeconfig.dart';
 import 'package:admin_panal/Model/productModel.dart';
-import 'package:admin_panal/View/Products/addproductsViewModel.dart';
+import 'package:admin_panal/View/Products/allProductsViewModel.dart';
 import 'package:admin_panal/View/Widgets/DropDown/drop_Down.dart';
 import 'package:admin_panal/View/Widgets/Header/headerView.dart';
 import 'package:admin_panal/View/Widgets/SideNavBar/sidenavbar.dart';
@@ -17,14 +17,14 @@ import 'package:stacked/stacked.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
-class AddProduct extends StatefulWidget {
+class AllProductView extends StatefulWidget {
   final ProductModel1? productModel;
-  AddProduct({this.productModel});
+  AllProductView({this.productModel});
   @override
-  _AddProductState createState() => _AddProductState();
+  _AllProductsState createState() => _AllProductsState();
 }
 
-class _AddProductState extends State<AddProduct> {
+class _AllProductsState extends State<AllProductView> {
   ScrollController _controller = ScrollController();
   bool isVisiable = false;
   @override
@@ -52,12 +52,10 @@ class _AddProductState extends State<AddProduct> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return ViewModelBuilder<AddProductsViewModel>.reactive(
+    return ViewModelBuilder<AllProductViewModel>.reactive(
       onModelReady: (model) {
         model.checkModel(widget.productModel);
-        if (widget.productModel != null) {
-          model.getAttributes(widget.productModel!.id);
-        }
+        model.getAttributes(widget.productModel!.id);
       },
       builder: (context, model, child) => Scaffold(
         floatingActionButton: Visibility(
@@ -66,37 +64,27 @@ class _AddProductState extends State<AddProduct> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               FloatingActionButton.extended(
-                heroTag: "btn3",
-                onPressed: () => widget.productModel == null
-                    ? model.submitProduct().then((value) {
-                        if (value) {
-                          showTopSnackBar(
-                            context,
-                            CustomSnackBar.success(
-                              message: 'Product Added Successfully',
-                            ),
-                            displayDuration: Duration(milliseconds: 150),
-                          );
-                        } else {
-                          showTopSnackBar(
-                            context,
-                            CustomSnackBar.error(
-                              message: 'Something Went Wrong try again',
-                            ),
-                            displayDuration: Duration(milliseconds: 150),
-                          );
-                        }
-                      })
-                    : model.updateProduct().then((value) {
-                        showTopSnackBar(
-                          context,
-                          CustomSnackBar.success(
-                            message: 'Product Successfully Updated',
-                          ),
-                          displayDuration: Duration(milliseconds: 150),
-                        );
-                        model.redirectBack();
-                      }),
+                heroTag: "btn1",
+                onPressed: () => model.updateProduct().then((value) {
+                  if (value) {
+                    showTopSnackBar(
+                      context,
+                      CustomSnackBar.success(
+                        message: 'Product Added Successfully',
+                      ),
+                      displayDuration: Duration(milliseconds: 150),
+                    );
+                    model.redirectBack();
+                  } else {
+                    showTopSnackBar(
+                      context,
+                      CustomSnackBar.error(
+                        message: 'Something Went Wrong try again',
+                      ),
+                      displayDuration: Duration(milliseconds: 150),
+                    );
+                  }
+                }),
                 label: model.isLoading
                     ? Container(
                         width: 12,
@@ -104,16 +92,14 @@ class _AddProductState extends State<AddProduct> {
                         child: CircularProgressIndicator(
                           color: Colors.white,
                         ))
-                    : Text(widget.productModel != null
-                        ? 'UpdateProduct'
-                        : 'Submit'),
+                    : Text('Submit'),
                 backgroundColor: accentColor,
               ),
               SizedBox(
                 height: SizeConfig.blockSizeVertical * 2,
               ),
               FloatingActionButton.extended(
-                heroTag: "btn4",
+                heroTag: "btn2",
                 onPressed: () {},
                 hoverElevation: 12,
                 backgroundColor: Colors.white,
@@ -677,47 +663,31 @@ class _AddProductState extends State<AddProduct> {
                                             SizeConfig.blockSizeHorizontal * 1,
                                       ),
                                       ElevatedButton(
-                                        onPressed: () => widget.productModel ==
-                                                null
-                                            ? model
-                                                .submitProduct()
-                                                .then((value) {
-                                                if (value) {
-                                                  showTopSnackBar(
-                                                    context,
-                                                    CustomSnackBar.success(
-                                                      message:
-                                                          'Product Added Successfully',
-                                                    ),
-                                                    displayDuration: Duration(
-                                                        milliseconds: 150),
-                                                  );
-                                                } else {
-                                                  showTopSnackBar(
-                                                    context,
-                                                    CustomSnackBar.error(
-                                                      message:
-                                                          'Something Went Wrong try again',
-                                                    ),
-                                                    displayDuration: Duration(
-                                                        milliseconds: 150),
-                                                  );
-                                                }
-                                              })
-                                            : model
-                                                .updateProduct()
-                                                .then((value) {
-                                                showTopSnackBar(
-                                                  context,
-                                                  CustomSnackBar.success(
-                                                    message:
-                                                        'Product Successfully Updated',
-                                                  ),
-                                                  displayDuration: Duration(
-                                                      milliseconds: 150),
-                                                );
-                                                model.redirectBack();
-                                              }),
+                                        onPressed: () =>
+                                            model.submitProduct().then((_) {
+                                          if (_) {
+                                            showTopSnackBar(
+                                              context,
+                                              CustomSnackBar.success(
+                                                message:
+                                                    'Product Added Successfully',
+                                              ),
+                                              displayDuration:
+                                                  Duration(milliseconds: 150),
+                                            );
+                                            model.redirectBack();
+                                          } else {
+                                            showTopSnackBar(
+                                              context,
+                                              CustomSnackBar.error(
+                                                message:
+                                                    'Something Went Wrong try again',
+                                              ),
+                                              displayDuration:
+                                                  Duration(milliseconds: 150),
+                                            );
+                                          }
+                                        }),
                                         child: model.isLoading
                                             ? Container(
                                                 height: 12,
@@ -728,9 +698,7 @@ class _AddProductState extends State<AddProduct> {
                                                 ),
                                               )
                                             : Text(
-                                                widget.productModel != null
-                                                    ? 'Update Product'
-                                                    : 'Submit',
+                                                'Submit',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: SizeConfig
@@ -765,7 +733,7 @@ class _AddProductState extends State<AddProduct> {
           ),
         ),
       ),
-      viewModelBuilder: () => AddProductsViewModel(),
+      viewModelBuilder: () => AllProductViewModel(),
     );
   }
 }

@@ -12,12 +12,21 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'manageProductsViewModel.dart';
 
 class ManageProducts extends StatelessWidget {
+  final bool? isAll;
+  ManageProducts({this.isAll});
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    bool _isAll = isAll ?? false;
     return ViewModelBuilder<ManageProductsViewModel>.reactive(
       viewModelBuilder: () => ManageProductsViewModel(),
-      onModelReady: (model) => model.getProducts(),
+      onModelReady: (model) {
+        if (_isAll) {
+          model.getAllProducts();
+        } else {
+          model.getProducts();
+        }
+      },
       builder: (context, model, child) => Scaffold(
         backgroundColor: Color(0xf7f7f7f7),
         body: SingleChildScrollView(
@@ -211,88 +220,100 @@ class ManageProducts extends StatelessWidget {
                                                     tableLabel:
                                                         '${model.productlist[i].description}',
                                                   ),
-                                                  Column(
-                                                    children: [
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          IconButton(
-                                                            onPressed: () => model
-                                                                .navigateToAddProduct(
-                                                              model.productlist[
-                                                                  i],
-                                                            ),
-                                                            icon: Icon(
-                                                              Icons.edit,
-                                                              color:
-                                                                  Colors.blue,
-                                                            ),
+                                                  _isAll
+                                                      ? Center(
+                                                          child: TextButton(
+                                                          onPressed: () => model
+                                                              .navigateToAllProduct(
+                                                            model
+                                                                .productlist[i],
                                                           ),
-                                                          IconButton(
-                                                            onPressed: () {
-                                                              showDialog(
-                                                                  context:
-                                                                      context,
-                                                                  builder: (BuildContext
-                                                                          ctx) =>
-                                                                      alert(
-                                                                          ctx,
-                                                                          model.productlist[
-                                                                              i]));
-                                                            },
-                                                            icon: Icon(
-                                                              Icons
-                                                                  .remove_red_eye,
-                                                              color:
-                                                                  accentColor,
-                                                            ),
+                                                          child: Text(
+                                                            'Me Too',
+                                                            style: TextStyle(
+                                                                color:
+                                                                    accentColor),
                                                           ),
-                                                          IconButton(
-                                                            onPressed: () {
-                                                              showDialog(
-                                                                  context:
-                                                                      context,
-                                                                  builder: (ctx) =>
-                                                                      DeleteAlert(
-                                                                        onConfirm: (val) => model
-                                                                            .deleteProduct(
-                                                                                model.productlist[i].id,
-                                                                                i,
-                                                                                val)
-                                                                            .then((value) {
-                                                                          if (value) {
-                                                                            if (value) {
-                                                                              showTopSnackBar(
-                                                                                context,
-                                                                                CustomSnackBar.success(
-                                                                                  message: 'Product Removed Successfully',
-                                                                                ),
-                                                                                displayDuration: Duration(milliseconds: 150),
-                                                                              );
-                                                                            } else {
-                                                                              showTopSnackBar(
-                                                                                context,
-                                                                                CustomSnackBar.error(
-                                                                                  message: 'Something Went Wrong try again',
-                                                                                ),
-                                                                                displayDuration: Duration(milliseconds: 150),
-                                                                              );
-                                                                            }
-                                                                          }
-                                                                        }),
-                                                                      ));
-                                                            },
-                                                            icon: Icon(
-                                                              Icons.delete,
-                                                              color: Colors.red,
+                                                        ))
+                                                      : Column(
+                                                          children: [
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                IconButton(
+                                                                  onPressed:
+                                                                      () => model
+                                                                          .navigateToAddProduct(
+                                                                    model.productlist[
+                                                                        i],
+                                                                  ),
+                                                                  icon: Icon(
+                                                                    Icons.edit,
+                                                                    color: Colors
+                                                                        .blue,
+                                                                  ),
+                                                                ),
+                                                                IconButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    showDialog(
+                                                                        context:
+                                                                            context,
+                                                                        builder: (BuildContext ctx) => alert(
+                                                                            ctx,
+                                                                            model.productlist[i]));
+                                                                  },
+                                                                  icon: Icon(
+                                                                    Icons
+                                                                        .remove_red_eye,
+                                                                    color:
+                                                                        accentColor,
+                                                                  ),
+                                                                ),
+                                                                IconButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    showDialog(
+                                                                        context:
+                                                                            context,
+                                                                        builder: (ctx) =>
+                                                                            DeleteAlert(
+                                                                              onConfirm: (val) => model.deleteProduct(model.productlist[i].id, i, val).then((value) {
+                                                                                if (value) {
+                                                                                  if (value) {
+                                                                                    showTopSnackBar(
+                                                                                      context,
+                                                                                      CustomSnackBar.success(
+                                                                                        message: 'Product Removed Successfully',
+                                                                                      ),
+                                                                                      displayDuration: Duration(milliseconds: 150),
+                                                                                    );
+                                                                                  } else {
+                                                                                    showTopSnackBar(
+                                                                                      context,
+                                                                                      CustomSnackBar.error(
+                                                                                        message: 'Something Went Wrong try again',
+                                                                                      ),
+                                                                                      displayDuration: Duration(milliseconds: 150),
+                                                                                    );
+                                                                                  }
+                                                                                }
+                                                                              }),
+                                                                            ));
+                                                                  },
+                                                                  icon: Icon(
+                                                                    Icons
+                                                                        .delete,
+                                                                    color: Colors
+                                                                        .red,
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
+                                                          ],
+                                                        ),
                                                 ],
                                               ),
                                           ],

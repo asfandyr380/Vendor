@@ -54,6 +54,40 @@ class ProductServices {
     }
   }
 
+  Future getAllProducts() async {
+    List<String> images = [];
+    List<String> rawPath = [];
+    List<ProductModel1> products = [];
+
+    Uri _url = Uri.parse('$baseUrl/products');
+    http.Response res = await http.get(_url);
+    var decodedBody = jsonDecode(res.body);
+    if (res.statusCode == 200 && decodedBody['success'] == 1) {
+      List data = decodedBody['data'];
+      for (var product in data) {
+        String imgPath = product['image'];
+        rawPath.add(imgPath);
+        String image = '$baseUrl/products/getimage/$imgPath';
+        images.add(image);
+        for (int i = 2; i <= 4; i++) {
+          if (product['image$i'] != "") {
+            String imgPath = product['image$i'];
+            String image = '$baseUrl/products/getimage/$imgPath';
+            images.add(image);
+            rawPath.add(imgPath);
+          }
+        }
+        var pro = ProductModel1.fromJson(product, images, rawPath);
+        products.add(pro);
+        images = [];
+        rawPath = [];
+      }
+      return products;
+    } else {
+      return 0;
+    }
+  }
+
   Future getProducts(int id) async {
     List<String> images = [];
     List<String> rawPath = [];
